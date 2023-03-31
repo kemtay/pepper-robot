@@ -31,12 +31,13 @@ import android.util.Log;
 
 public class MainActivity extends RobotActivity implements RobotLifecycleCallbacks {
     // Store the Animate action.
-    private Animate animate;
+    private Animate d_animate;
+    private Animate s_animate;
 
     // Store the GoTo action.
     private GoTo goTo;
     // Store the Animate action.
-    private Animate d_animate;
+    private Animate animate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,25 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         animate.addOnStartedListener(() -> Log.i(TAG, "Animation started."));
         // Run the action synchronously.
         d_animate.run();
+        
+        // Create an animation.
+        Animation myanimation2 = AnimationBuilder.with(qiContext) // Create the builder with the context.
+                .withResources(R.raw.go_back) // Set the animation resource.
+                .build(); // Build the animation.
+        // Create an animate action.
+        s_animate = AnimateBuilder.with(qiContext) // Create the builder with the context.
+                .withAnimation(myanimation2) // Set the animation.
+                .build(); // Build the animate action.
+        // Add an on started listener to the animate action.
+        s_animate.addOnStartedListener(() -> Log.i(TAG, "STEP started."));
+
+        // Run the action synchronously and get the result
+        try {
+            s_animate.run();;
+            Log.i(TAG, "STEP Success");
+        } catch (Exception exception) {
+            Log.e(TAG, "STEP Error", exception);
+        }
 
 
     }
@@ -107,6 +127,10 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         // Remove on started listeners from the animate action.
         if (d_animate != null) {
             d_animate.removeAllOnStartedListeners();
+        }
+        
+        if (s_animate != null) {
+            s_animate.removeAllOnStartedListeners();
         }
     }
 
